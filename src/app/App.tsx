@@ -117,10 +117,14 @@ interface Toast {
 // ═══════════════════════════════════════════════════════════════
 
 const AUTH_USERS = [
+  { id: "U001", name: "Arjun Mehta", email: "admin@distroerp.com", password: "admin123", role: "Admin" as Role },
+  { id: "U002", name: "Priya Singh", email: "sales@distroerp.com", password: "sales123", role: "Sales" as Role },
+  { id: "U003", name: "Rajan Kumar", email: "warehouse@distroerp.com", password: "warehouse123", role: "Warehouse" as Role },
+  { id: "U004", name: "Deepak Verma", email: "accounts@distroerp.com", password: "accounts123", role: "Accounts" as Role },
   { id: "U001", name: "Arjun Mehta", email: "admin@erp.com", password: "admin123", role: "Admin" as Role },
   { id: "U002", name: "Priya Singh", email: "sales@erp.com", password: "sales123", role: "Sales" as Role },
   { id: "U003", name: "Rajan Kumar", email: "warehouse@erp.com", password: "wh123", role: "Warehouse" as Role },
-  { id: "U004", name: "Deepa Sharma", email: "accounts@erp.com", password: "acc123", role: "Accounts" as Role },
+  { id: "U004", name: "Deepak Verma", email: "accounts@erp.com", password: "acc123", role: "Accounts" as Role },
 ];
 
 const SEED_CUSTOMERS: Customer[] = [
@@ -2236,21 +2240,28 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!email || !password) { setError("Email and password are required"); return; }
     setLoading(true);
-    setTimeout(() => {
-      const result = login(email, password);
-      if (!result.success) { setError(result.message); setLoading(false); }
-    }, 500);
+    setError("");
+    try {
+      const result = await login(email, password);
+      if (!result.success) {
+        setError(result.message || "Invalid email or password");
+        setLoading(false);
+      }
+    } catch (err: any) {
+      setError(err?.message || "Login failed. Please check credentials.");
+      setLoading(false);
+    }
   };
 
   const demos = [
-    { email: "admin@erp.com", password: "admin123", role: "Admin" as Role, desc: "Full access" },
-    { email: "sales@erp.com", password: "sales123", role: "Sales" as Role, desc: "Customers & Challans" },
-    { email: "warehouse@erp.com", password: "wh123", role: "Warehouse" as Role, desc: "Products & Stock" },
-    { email: "accounts@erp.com", password: "acc123", role: "Accounts" as Role, desc: "Challans only" },
+    { email: "admin@distroerp.com", password: "admin123", role: "Admin" as Role, desc: "Full access" },
+    { email: "sales@distroerp.com", password: "sales123", role: "Sales" as Role, desc: "Customers & Challans" },
+    { email: "warehouse@distroerp.com", password: "warehouse123", role: "Warehouse" as Role, desc: "Products & Stock" },
+    { email: "accounts@distroerp.com", password: "accounts123", role: "Accounts" as Role, desc: "Challans only" },
   ];
 
   const roleColors: Record<Role, string> = {
