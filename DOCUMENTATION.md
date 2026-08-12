@@ -348,7 +348,10 @@ graph LR
 #### Inventory Guard & Validation Rules
 When a challan is created as `Confirmed` or transitioned from `Draft` to `Confirmed`:
 1. The server performs a pre-transaction check across **all** requested items:
-   $$\forall \text{ item } i, \quad \text{products}[i].\text{current\_stock} \ge \text{item}[i].\text{qty}$$
+   ```text
+   For each line item i:
+     products[i].current_stock >= item[i].qty
+   ```
 2. **If any item fails this check**:
    - The entire transaction is aborted.
    - The server responds with `HTTP 400 Bad Request`.
@@ -356,7 +359,10 @@ When a challan is created as `Confirmed` or transitioned from `Draft` to `Confir
      `"Insufficient stock for product '<product_name>'. Available: <available_qty>, Requested: <requested_qty>"`
 3. **If all items pass**:
    - Product stocks are decremented atomically:
-     $$\text{products}[i].\text{current\_stock} \leftarrow \text{products}[i].\text{current\_stock} - \text{item}[i].\text{qty}$$
+     ```text
+     For each line item i:
+       products[i].current_stock = products[i].current_stock - item[i].qty
+     ```
    - Stock movement audit records (**TYPE: OUT**) are inserted for each item.
    - Challan status changes to `Confirmed`.
 
