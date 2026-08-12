@@ -333,10 +333,11 @@ erDiagram
 ### 2. Customer CRM Module
 
 #### Customer Status Lifecycle
-```
-[ Lead ] ──(Successful Follow-up / Order)──> [ Active ]
-   │                                             │
-   └─────────────(Account Paused)───────────────> [ Inactive ]
+```mermaid
+graph LR
+    Lead["Lead"] -->|"Successful Follow-up / Order"| Active["Active Account"]
+    Lead -->|"Account Paused"| Inactive["Inactive"]
+    Active -->|"Account Paused"| Inactive
 ```
 
 #### Key Capabilities
@@ -349,24 +350,27 @@ erDiagram
 
 #### Low Stock Threshold Logic
 A product is flagged with a **Low Stock Alert** badge whenever:
-$$\text{current\_stock} \le \text{min\_stock\_alert}$$
+`current_stock <= min_stock_alert`
+
 The product list API supports filtering via `?alertOnly=true` to instantly isolate items needing reorder.
 
 #### Stock Movement Audit Logging
 Every manual stock entry/dispatch or automatic challan confirmation generates an immutable record in `stock_movements`:
-$$\text{new\_stock} = \begin{cases} \text{current\_stock} + \text{qty\_changed} & \text{if Movement = IN} \\ \text{current\_stock} - \text{qty\_changed} & \text{if Movement = OUT} \end{cases}$$
+- **Stock IN (Restock)**: `new_stock = current_stock + qty_changed`
+- **Stock OUT (Dispatch)**: `new_stock = current_stock - qty_changed`
 
 ---
 
 ### 4. Sales Challan Module & Order Lifecycle
 
 #### Challan State Machine
-```
-           ┌─────────────── POST /api/challans (status='Draft') ───────────────┐
-           │                                                                   │
-           ▼                                                                   ▼
-      [ DRAFT ] ──(POST /api/challans/:id/confirm)──> [ CONFIRMED ] ──(POST /api/challans/:id/cancel)──> [ CANCELLED ]
-    (Stock Intact)                                    (Stock Reduced)                                (Stock Restocked)
+```mermaid
+graph LR
+    Create["Create Challan"] -->|"status = 'Draft'"| Draft["DRAFT<br/>(Stock Intact)"]
+    Create -->|"status = 'Confirmed'"| Confirmed["CONFIRMED<br/>(Stock Deducted)"]
+    Draft -->|"POST /api/challans/:id/confirm"| Confirmed
+    Confirmed -->|"POST /api/challans/:id/cancel"| Cancelled["CANCELLED<br/>(Stock Restocked)"]
+    Draft -->|"POST /api/challans/:id/cancel"| Cancelled
 ```
 
 #### Inventory Guard & Validation Rules
