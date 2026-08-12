@@ -43,24 +43,24 @@ The application is structured as a full-stack mono-repository featuring a decoup
 
 ```mermaid
 graph TD
-    Client[React + TypeScript Frontend SPA] -->|HTTPS / REST API| Server[Express.js Node.js Server]
-    Server -->|JWT Auth Middleware| RBAC[Role Guard Middleware]
-    RBAC -->|Routes & Controllers| Handlers[Route Handlers]
-    Handlers -->|SQLite3 Driver / Promises| DB[(SQLite Database / erp_crm.db)]
+    Client["React + TypeScript Frontend SPA"] -->|"HTTPS / REST API"| Server["Express.js Node.js Server"]
+    Server -->|"JWT Auth Middleware"| RBAC["Role Guard Middleware"]
+    RBAC -->|"Routes & Controllers"| Handlers["Route Handlers"]
+    Handlers -->|"SQLite3 Driver / Promises"| DB[("SQLite Database / erp_crm.db")]
     
     subgraph Frontend Subsystem
-        Client --> Services[API Service Client - src/app/services/api.ts]
-        Client --> State[React Context Providers: AuthContext & AppContext]
-        Client --> UI[Tailwind CSS Admin UI Components]
+        Client --> Services["API Service Client - src/app/services/api.ts"]
+        Client --> State["React Context Providers: AuthContext & AppContext"]
+        Client --> UI["Tailwind CSS Admin UI Components"]
     end
 
     subgraph Backend Subsystem
-        Handlers --> AuthRoute[/api/auth]
-        Handlers --> CustRoute[/api/customers]
-        Handlers --> ProdRoute[/api/products]
-        Handlers --> ChallanRoute[/api/challans]
-        Handlers --> MoveRoute[/api/stock-movements]
-        Handlers --> DashRoute[/api/dashboard]
+        Handlers --> AuthRoute["/api/auth"]
+        Handlers --> CustRoute["/api/customers"]
+        Handlers --> ProdRoute["/api/products"]
+        Handlers --> ChallanRoute["/api/challans"]
+        Handlers --> MoveRoute["/api/stock-movements"]
+        Handlers --> DashRoute["/api/dashboard"]
     end
 ```
 
