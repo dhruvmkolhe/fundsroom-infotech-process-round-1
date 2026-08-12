@@ -2,6 +2,8 @@
 
 A production-ready full-stack Enterprise Resource Planning (ERP) and Customer Relationship Management (CRM) system designed for wholesale and distribution enterprises. Built with Node.js, Express, TypeScript, SQLite, and React.
 
+> 📖 **Master Documentation**: For full architecture diagrams, database schemas, ER diagrams, REST API specs, and business logic details, see [`DOCUMENTATION.md`](DOCUMENTATION.md).
+
 ---
 
 ## 🚀 Key Modules & Business Workflows
